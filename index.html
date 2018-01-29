@@ -29,7 +29,12 @@
 							
 			save : function(){
 					this.setState({editing:false});
-					this.props.updateBookTxt(this.refs.newBookTitle.value,this.props.index);
+					console.log("new author  "+this.refs.newAuthor.value);
+					var mynewBook={
+					     bookName: this.refs.newBookTitle.value,
+						 author: this.refs.newAuthor.value
+					}
+					this.props.updateBookTxt(mynewBook,this.props.index);
 					
 					
 			},
@@ -42,7 +47,7 @@
 				return (
 				 <div className="col-md-4"> 
 						<div className=" panel panel-default">
-								<div className="panel-heading">{this.props.children}</div>
+								<div className="panel-heading">{this.props.dta.bookName} ({this.props.dta.author})</div>
 								<div className="panel-body">
 									<button onClick={this.edit} className="btn btn-success">Edit </button>
 									<button onClick={this.remove} className="btn btn-danger">Delete </button>
@@ -52,13 +57,18 @@
 						)
 						},
 			renderEdit: function(){
+			
 				return (
 				 <div className="col-md-4"> 
 						<div className=" panel panel-default">
 								<div className="panel-heading">Edit info</div>
 								<div className="panel-body">
 									<form>
-									<textarea className="form-control" ref="newBookTitle" defaultValue={this.props.children}></textarea>
+									 <div class="form-group">
+										<label for="exampleInputName2">Name</label>
+										<input type="text" className="form-control" ref="newAuthor"  placeholder="Jane Doe" defaultValue={this.props.dta.author}></input>
+									  </div>
+									<textarea className="form-control" ref="newBookTitle" defaultValue={this.props.dta.bookName}></textarea>
 									<button onClick={this.save } className="btn btn-success ">Save</button>
 									</form>
 								</div>
@@ -83,43 +93,49 @@
 				getInitialState: function(){
 							return {
 								books: [
-									"Harry Potter",
-									"Lord of the Rings",
-									"Treasure Island"
+									{ bookName:"Harry Potter" ,author:"J K Rowling"},
+									{ bookName:"Lord of the Rings", author:"Tolkin"},
+									{ bookName:"Treasure Island", author:"robbie stevenson"}
 									]
 							}
 				},
 				addBook : function(txt){
 					var arg = this.state.books;
+					
 					arg.push(txt);
 					this.setState({books:arg})
 				},
 				removeBook: function(i){
 					console.log("remove comment "+i);
+					
 					var arg = this.state.books;
 					arg.splice(i,1);
 					this.setState({books:arg})
 				},
 				
-				updateBook: function(newtx,i){
-					console.log("edit comment "+i+" "+newtx);
+				updateBook: function(newbook,i){
+					console.log("edit comment "+i+" "+newbook.bookName  + "  author  " + newbook.author);
 					var arg = this.state.books;
-					arg[i]=newtx;
+					arg[i]=newbook;
 					this.setState({books:arg})
 				},
 				 
 				eachBook:  function(text,i){
 								return (
 								<Book key={i} index={i} updateBookTxt={this.updateBook} 
-								removeBooktTxt={this.removeBook}>
-								{text}
+								removeBooktTxt={this.removeBook} dta={this.state.books[i]}> 
+								
 								</Book>);
 							},
 							
 				render: function(){
+					var obj = {bookName:'murder'};
 							return (
+							
 							<div>
-							<button onClick={this.addBook.bind(null,'Muder on express')} className="btn btn-info"> Add book</button>
+							<h1> There are {this.state.books.length}   many books in collection</h1>
+							
+							<button onClick={this.addBook.bind(null,obj)} className="btn btn-info"> Add book</button>
 								<div className="nnnn"  >
 								{
 									this.state.books.map(this.eachBook)

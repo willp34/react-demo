@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="react.js"></script>
+    <script src="react-dom.js"></script>
+    <script src="browser.min.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <title>My First React Example</title>
+  </head>
+  <body>
+    <div id="greeting-div"> <p>Demo App </p></div>
+  
+	<div id="app" class="container"></div>
+
+	   <script type="text/babel">
+	    var Book = React.createClass({
+		
+			getInitialState: function(){
+				return {editing:false};
+			},
+			edit: function(){
+				this.setState({editing:true});
+						//	alert("edit "+e);
+							},
+							
+			save : function(){
+					this.setState({editing:false});
+					this.props.updateBookTxt(this.refs.newBookTitle.value,this.props.index);
+					
+					
+			},
+			remove:function(){
+		
+			   console.log("deleted "+this.props.index);
+			   this.props.removeBooktTxt(this.props.index);
+			},
+			renderNormal: function () {
+				return (
+				 <div className="col-md-4"> 
+						<div className=" panel panel-default">
+								<div className="panel-heading">{this.props.children}</div>
+								<div className="panel-body">
+									<button onClick={this.edit} className="btn btn-success">Edit </button>
+									<button onClick={this.remove} className="btn btn-danger">Delete </button>
+								</div>
+							</div> 
+						</div>
+						)
+						},
+			renderEdit: function(){
+				return (
+				 <div className="col-md-4"> 
+						<div className=" panel panel-default">
+								<div className="panel-heading">Edit info</div>
+								<div className="panel-body">
+									<form>
+									<textarea className="form-control" ref="newBookTitle" defaultValue={this.props.children}></textarea>
+									<button onClick={this.save } className="btn btn-success ">Save</button>
+									</form>
+								</div>
+							</div>
+						</div>
+			
+							
+					);
+			},
+			render: function() {
+						if(this.state.editing){
+						 return	this.renderEdit();
+						}
+						else{
+						 return  this.renderNormal();
+						}
+					  }
+				
+		});
+		
+		var Board = React.createClass({
+				getInitialState: function(){
+							return {
+								books: [
+									"Harry Potter",
+									"Lord of the Rings",
+									"Treasure Island"
+									]
+							}
+				},
+				addBook : function(txt){
+					var arg = this.state.books;
+					arg.push(txt);
+					this.setState({books:arg})
+				},
+				removeBook: function(i){
+					console.log("remove comment "+i);
+					var arg = this.state.books;
+					arg.splice(i,1);
+					this.setState({books:arg})
+				},
+				
+				updateBook: function(newtx,i){
+					console.log("edit comment "+i+" "+newtx);
+					var arg = this.state.books;
+					arg[i]=newtx;
+					this.setState({books:arg})
+				},
+				 
+				eachBook:  function(text,i){
+								return (
+								<Book key={i} index={i} updateBookTxt={this.updateBook} 
+								removeBooktTxt={this.removeBook}>
+								{text}
+								</Book>);
+							},
+							
+				render: function(){
+							return (
+							<div>
+							<button onClick={this.addBook.bind(null,'Muder on express')} className="btn btn-info"> Add book</button>
+								<div className="nnnn"  >
+								{
+									this.state.books.map(this.eachBook)
+								}
+								</div>
+							</div>
+							)
+						}
+				});
+		ReactDOM.render(
+		<Board />	
+		, document.getElementById('app'));
+	 </script> 
+  </body>
+</html>
